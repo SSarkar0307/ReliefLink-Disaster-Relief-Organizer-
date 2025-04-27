@@ -37,7 +37,7 @@ class ChatInput(BaseModel):
     text: str
 
 # Groq API configuration
-GROQ_API_KEY = "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"
+GROQ_API_KEY = "YOUR_API_KEY"
 GROQ_API_URL = "https://api.groq.com/openai/v1/chat/completions"
 MODEL = "meta-llama/llama-4-scout-17b-16e-instruct"
 
