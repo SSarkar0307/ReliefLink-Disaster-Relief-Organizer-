@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ReliefLink - Dashboard</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #238636;
+            --primary-dark: #2EA043;
+            --secondary: #8B949E;
+            --accent: #F78166;
+            --success: #238636;
+            --error: #F85149;
+            --background-light: #FFFFFF;
+            --text-light: #24292F;
+            --text-light-secondary: #57606A;
+            --card-light: #F6F8FA;
+            --border-light: #D0D7DE;
+            --background-dark: #0D1117;
+            --text-dark: #E6EDF3;
+            --text-dark-secondary: #A3BFFA;
+            --card-dark: #161B22;
+            --border-dark: #30363D;
+        }
+
+        .dark {
+            --primary: #238636;
+            --primary-dark: #2EA043;
+            --secondary: #8B949E;
+            --accent: #F78166;
+            --success: #238636;
+            --error: #F85149;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            transition: background-color 0.3s ease, color 0.3s ease;
+            background-color: var(--background-dark);
+            color: var(--text-dark);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        #app-container {
+            flex: 1 0 auto;
+        }
+
+        .custom-card {
+            background-color: var(--card-dark);
+            border: 1px solid var(--border-dark);
+            transition: all 0.3s ease;
+            border-radius: 6px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .btn-primary {
+            background-color: var(--primary);
+            transition: transform 0.2s ease, box-shadow 0.2s ease, background-color 0.3s ease;
+        }
+
+        .btn-primary:hover {
+            background-color: var(--primary-dark);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.15);
+        }
+
+        .btn-primary:active {
+            transform: translateY(0);
+            box-shadow: 0 2px 3px rgba(0, 0, 0, 0.1);
+        }
+
+        .navbar {
+            background-color: var(--background-dark);
+            padding: 1rem;
+            display: flex;
+            justify-content: center; /* Center the logo */
+            align-items: center;
+            transition: background-color 0.3s ease, color 0.3s ease;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .navbar .logo {
+            display: flex;
+            align-items: center;
+        }
+
+        .logo-icon {
+            color: var(--text-dark);
+            font-size: 1.5rem;
+            margin-right: 0.5rem;
+            transition: color 0.3s ease;
+        }
+
+        .logo-text {
+            color: var(--text-dark);
+            font-weight: 700;
+            font-size: 1.5rem;
+            transition: color 0.3s ease;
+        }
+
+        .dark .text-gray-500 {
+            color: var(--text-dark-secondary) !important;
+        }
+
+        .dark .text-gray-900 {
+            color: var(--text-dark) !important;
+        }
+
+        main {
+            margin-bottom: 3rem; /* Increased spacing to push footer down */
+        }
+
+        footer {
+            flex-shrink: 0;
+            background-color: var(--background-dark);
+            padding: 2rem 0; /* Increased padding for more space */
+            text-align: center;
+            color: var(--text-dark-secondary);
+            font-size: 0.875rem;
+            font-weight: 500;
+            transition: background-color 0.3s ease, color 0.3s ease;
+            margin-top: auto; /* Pushes footer to the bottom */
+        }
+    </style>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const user = JSON.parse(localStorage.getItem('user') || '{}');
+            if (user.name) document.getElementById('name').textContent = user.name;
+            if (user.email) document.getElementById('email').textContent = user.email;
+            if (user.city) document.getElementById('city').textContent = user.city;
+            if (user.balance) document.getElementById('balance').textContent = user.balance;
+            if (user.public_key) document.getElementById('public-key').textContent = user.public_key;
+        });
+    </script>
+</head>
+<body class="min-h-screen bg-[var(--background-dark)] text-[var(--text-dark)]">
+    <div id="app-container">
+        <!-- Navigation -->
+        <nav class="navbar shadow-sm">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="flex justify-center h-16"> <!-- Centered content -->
+                    <div class="flex-shrink-0 flex items-center logo">
+                        <i class="fas fa-hand-holding-heart logo-icon mr-2"></i>
+                        <span class="logo-text">ReliefLink</span>
+                    </div>
+                </div>
+            </div>
+        </nav>
+
+        <!-- Main Content -->
+        <main class="max-w-7xl mx-auto py-8 sm:px-6 lg:px-8">
+            <div class="max-w-3xl mx-auto">
+                <div class="text-center mb-6">
+                    <h2 class="text-3xl font-extrabold text-[var(--text-dark)]">Your Relief Profile</h2>
+                    <p class="mt-2 text-sm text-[var(--text-dark-secondary)]">
+                        Manage your account and view your relief wallet
+                    </p>
+                </div>
+                <div class="grid grid-cols-1 gap-6 md:grid-cols-2">
+                    <div class="custom-card shadow-lg rounded-lg overflow-hidden">
+                        <div class="px-6 py-5 border-b border-[var(--border-dark)]">
+                            <h3 class="text-lg font-medium text-[var(--text-dark)]">
+                                <i class="fas fa-user-circle mr-2"></i>Personal Information
+                            </h3>
+                        </div>
+                        <div class="p-6">
+                            <div class="mb-4">
+                                <div class="text-sm text-[var(--text-dark-secondary)]">Full Name</div>
+                                <div id="name" class="mt-1 text-base font-medium text-[var(--text-dark)]"></div>
+                            </div>
+                            <div class="mb-4">
+                                <div class="text-sm text-[var(--text-dark-secondary)]">Email Address</div>
+                                <div id="email" class="mt-1 text-base font-medium text-[var(--text-dark)]"></div>
+                            </div>
+                            <div class="mb-4">
+                                <div class="text-sm text-[var(--text-dark-secondary)]">City</div>
+                                <div id="city" class="mt-1 text-base font-medium text-[var(--text-dark)]"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="custom-card shadow-lg rounded-lg overflow-hidden">
+                        <div class="px-6 py-5 border-b border-[var(--border-dark)]">
+                            <h3 class="text-lg font-medium text-[var(--text-dark)]">
+                                <i class="fas fa-wallet mr-2"></i>Relief Wallet
+                            </h3>
+                        </div>
+                        <div class="p-6">
+                            <div class="mb-6">
+                                <div class="text-sm text-[var(--text-dark-secondary)]">Current Balance</div>
+                                <div class="mt-2 flex items-end">
+                                    <span id="balance" class="text-3xl font-bold text-[var(--text-dark)]">0.00</span>
+                                    <span class="ml-2 text-sm text-[var(--text-dark-secondary)]">XLM</span>
+                                </div>
+                            </div>
+                            <div class="mb-4">
+                                <div class="text-sm text-[var(--text-dark-secondary)]">Wallet Address</div>
+                                <div class="mt-1 flex items-center">
+                                    <div id="public-key" class="text-sm font-mono text-[var(--text-dark)] truncate"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
+            <p class="text-center text-sm text-[var(--text-dark-secondary)]">
+                © 2025 ReliefLink. All rights reserved.
+            </p>
+        </div>
+    </footer>
+</body>
+</html>

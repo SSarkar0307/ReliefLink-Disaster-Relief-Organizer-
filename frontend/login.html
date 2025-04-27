@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - ReliefLink</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #238636;
+            --primary-dark: #2EA043;
+            --secondary: #8B949E;
+            --accent: #F78166;
+            --success: #238636;
+            --error: #F85149;
+            --background-light: #FFFFFF;
+            --text-light: #24292F;
+            --text-light-secondary: #57606A;
+            --card-light: #F6F8FA;
+            --border-light: #D0D7DE;
+            --background-dark: #0D1117;
+            --text-dark: #E6EDF3;
+            --text-dark-secondary: #A3BFFA;
+            --card-dark: #161B22;
+            --border-dark: #30363D;
+        }
+
+        html, body {
+            height: 100%;
+            margin: 0;
+            font-family: 'Inter', sans-serif;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        body {
+            display: flex;
+            flex-direction: column;
+            background-color: var(--background-light);
+            color: var(--text-light);
+        }
+
+        .dark body {
+            background-color: var(--background-dark);
+            color: var(--text-dark);
+        }
+
+        #app-container {
+            flex: 1 0 auto;
+        }
+
+        .form-input {
+            transition: all 0.3s ease;
+            border: 1px solid var(--border-light);
+            background-color: var(--card-light);
+            color: var(--text-light);
+            border-radius: 6px;
+            padding: 0.75rem;
+        }
+
+        .form-input:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(35, 134, 54, 0.2);
+            outline: none;
+        }
+
+        .dark .form-input {
+            background-color: var(--card-dark);
+            color: var(--text-dark);
+            border-color: var(--border-dark);
+        }
+
+        .custom-card {
+            background-color: var(--card-light);
+            border: 1px solid var(--border-light);
+            transition: all 0.3s ease;
+            border-radius: 6px;
+            padding: 1.5rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .dark .custom-card {
+            background-color: var(--card-dark);
+            border-color: var(--border-dark);
+        }
+
+        .btn-primary {
+            background-color: var(--primary);
+            color: white;
+            padding: 0.75rem;
+            border-radius: 6px;
+            transition: background-color 0.3s ease;
+            width: 100%;
+        }
+
+        .btn-primary:hover {
+            background-color: var(--primary-dark);
+        }
+
+        .navbar {
+            transition: background-color 0.3s ease, color 0.3s ease;
+            padding: 1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .dark .navbar {
+            background-color: var(--background-dark);
+        }
+
+        .logo-icon {
+            color: var(--text-light);
+            transition: color 0.3s ease;
+        }
+
+        .dark .logo-icon {
+            color: white;
+        }
+
+        .logo-text {
+            color: var(--text-light);
+            font-weight: bold;
+            font-size: 1.25rem;
+            transition: color 0.3s ease;
+        }
+
+        .dark .logo-text {
+            color: var(--text-dark);
+        }
+
+        .dark .text-gray-500 {
+            color: var(--text-dark-secondary) !important;
+        }
+
+        .dark .text-gray-900 {
+            color: var(--text-dark) !important;
+        }
+
+        footer {
+            flex-shrink: 0;
+            background-color: var(--background-light);
+            padding: 1rem 0;
+            text-align: center;
+            color: var(--text-light-secondary);
+            font-size: 0.875rem;
+            font-weight: 500;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        .dark footer {
+            background-color: var(--background-dark);
+            color: var(--text-dark-secondary);
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .page-enter {
+            animation: fadeIn 0.5s ease forwards;
+        }
+    </style>
+</head>
+<body>
+    <div id="app-container">
+        <!-- Navigation -->
+        <nav class="navbar bg-white dark:bg-[var(--background-dark)]">
+            <div class="flex items-center">
+                <i class="fas fa-hand-holding-heart text-2xl logo-icon mr-2"></i>
+                <span class="logo-text">ReliefLink</span>
+            </div>
+            <div>
+                <button id="theme-toggle" class="p-2 rounded-full text-gray-500 dark:text-[var(--text-dark-secondary)] hover:bg-gray-100 dark:hover:bg-[var(--border-dark)] transition-colors duration-200" aria-label="Toggle theme">
+                    <svg id="theme-toggle-dark-icon" class="hidden w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                        <path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"></path>
+                    </svg>
+                    <svg id="theme-toggle-light-icon" class="hidden w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                        <path d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z" fill-rule="evenodd" clip-rule="evenodd"></path>
+                    </svg>
+                </button>
+            </div>
+        </nav>
+
+        <!-- Main Content -->
+        <main class="max-w-7xl mx-auto py-8 sm:px-6 lg:px-8">
+            <div class="page-enter px-4 py-6 sm:px-0">
+                <div class="max-w-md mx-auto">
+                    <div class="text-center mb-8">
+                        <h2 class="text-4xl font-extrabold text-gray-900 dark:text-[var(--text-dark)]">Login</h2>
+                        <p class="mt-2 text-sm text-gray-500 dark:text-[var(--text-dark-secondary)]">
+                            Sign in to access your disaster relief support
+                        </p>
+                    </div>
+
+                    <div class="custom-card">
+                        <form id="login-form" class="space-y-6">
+                            <div>
+                                <label for="email" class="block text-sm font-medium text-gray-500 dark:text-[var(--text-dark-secondary)]">Email Address</label>
+                                <input type="email" id="email" name="email" required
+                                       class="form-input mt-1 block w-full placeholder-gray-400 dark:placeholder-[var(--text-dark-secondary)]"
+                                       placeholder="you@example.com">
+                                <p id="email-error" class="mt-1 text-sm text-[var(--error)] hidden"></p>
+                            </div>
+                            <div>
+                                <label for="password" class="block text-sm font-medium text-gray-500 dark:text-[var(--text-dark-secondary)]">Password</label>
+                                <div class="relative">
+                                    <input type="password" id="password" name="password" required
+                                           class="form-input mt-1 block w-full placeholder-gray-400 dark:placeholder-[var(--text-dark-secondary)]"
+                                           placeholder="Your password">
+                                    <button type="button" id="toggle-password" class="absolute inset-y-0 right-0 pr-4 flex items-center text-gray-500 dark:text-[var(--text-dark-secondary)]">
+                                        <i class="fas fa-eye"></i>
+                                    </button>
+                                </div>
+                                <p id="password-error" class="mt-1 text-sm text-[var(--error)] hidden"></p>
+                            </div>
+                            <button type="submit" class="btn-primary">Login</button>
+                            <div id="response-message" class="mt-4 text-center text-gray-900 dark:text-[var(--text-dark)] hidden"></div>
+                        </form>
+                    </div>
+
+                    <p class="mt-6 text-center text-sm text-gray-500 dark:text-[var(--text-dark-secondary)]">
+                        Don't have an account? <a href="register.html" class="font-medium text-[var(--primary)] hover:text-[var(--primary-dark)]">Register</a>
+                    </p>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <p>© 2025 ReliefLink. All rights reserved.</p>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Dark mode toggle
+            const themeToggleDarkIcon = document.getElementById('theme-toggle-dark-icon');
+            const themeToggleLightIcon = document.getElementById('theme-toggle-light-icon');
+            const themeToggleBtn = document.getElementById('theme-toggle');
+
+            if (localStorage.getItem('color-theme') === 'dark' || 
+                (!('color-theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+                document.documentElement.classList.add('dark');
+                themeToggleLightIcon.classList.remove('hidden');
+            } else {
+                themeToggleDarkIcon.classList.remove('hidden');
+            }
+
+            themeToggleBtn.addEventListener('click', function() {
+                themeToggleDarkIcon.classList.toggle('hidden');
+                themeToggleLightIcon.classList.toggle('hidden');
+                if (localStorage.getItem('color-theme') === 'dark' || document.documentElement.classList.contains('dark')) {
+                    document.documentElement.classList.remove('dark');
+                    localStorage.setItem('color-theme', 'light');
+                } else {
+                    document.documentElement.classList.add('dark');
+                    localStorage.setItem('color-theme', 'dark');
+                }
+            });
+
+            // Password toggle visibility
+            const togglePassword = document.getElementById('toggle-password');
+            const passwordInput = document.getElementById('password');
+
+            togglePassword.addEventListener('click', function() {
+                const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+                passwordInput.setAttribute('type', type);
+                togglePassword.innerHTML = type === 'password' ? '<i class="fas fa-eye"></i>' : '<i class="fas fa-eye-slash"></i>';
+            });
+
+            // Form submission
+            document.getElementById('login-form').addEventListener('submit', async function(e) {
+                e.preventDefault();
+                const email = document.getElementById('email').value.trim();
+                const password = document.getElementById('password').value;
+
+                const emailError = document.getElementById('email-error');
+                const passwordError = document.getElementById('password-error');
+                const responseMessage = document.getElementById('response-message');
+                emailError.classList.add('hidden');
+                passwordError.classList.add('hidden');
+                responseMessage.classList.add('hidden');
+
+                if (!email || !password) {
+                    if (!email) {
+                        emailError.textContent = 'Email is required';
+                        emailError.classList.remove('hidden');
+                    }
+                    if (!password) {
+                        passwordError.textContent = 'Password is required';
+                        passwordError.classList.remove('hidden');
+                    }
+                    return;
+                }
+
+                try {
+                    const response = await fetch("http://127.0.0.1:5000/auth/login", {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify({ email, password })
+                    });
+                    
+                    const data = await response.json();
+                    if (response.ok) {
+                        localStorage.setItem('user', JSON.stringify(data));
+                        window.location.href = 'dashboard.html';
+                    } else {
+                        responseMessage.textContent = data.msg || 'Login failed. Try again.';
+                        responseMessage.classList.remove('hidden');
+                    }
+                } catch (error) {
+                    console.error('Error:', error);
+                    responseMessage.textContent = 'An error occurred. Please try again later.';
+                    responseMessage.classList.remove('hidden');
+                }
+            });
+        });
+    </script>
+</body>
+</html>

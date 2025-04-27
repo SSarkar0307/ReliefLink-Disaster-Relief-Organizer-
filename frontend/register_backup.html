@@ -1,0 +1,631 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ReliefLink - Disaster Relief Platform</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #5D5CDE;
+            --primary-dark: #4A49B5;
+            --secondary: #38B2AC;
+            --accent: #ED8936;
+            --success: #48BB78;
+            --error: #F56565;
+            --background-light: #F9FAFB;
+            --text-light: #1F2937;
+            --text-light-secondary: #6B7280;
+            --card-light: #FFFFFF;
+            --border-light: #D1D5DB;
+            --background-dark: #2B3445; /* Adjusted for better contrast */
+            --text-dark: #F9FAFB; /* High contrast for readability */
+            --text-dark-secondary: #D1D5DB;
+            --card-dark: #3B4455; /* Lighter card background for better contrast */
+            --border-dark: #6B7280; /* Adjusted for visibility */
+        }
+
+        .dark {
+            --primary: #7F9CF5; /* Softer primary color for dark mode */
+            --primary-dark: #6366F1;
+            --secondary: #0D9488;
+            --accent: #F97316;
+            --success: #22C55E;
+            --error: #EF4444;
+        }
+
+        body {
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        .dark body {
+            background-color: var(--background-dark);
+            color: var(--text-dark);
+        }
+
+        .form-input:focus, .form-select:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(93, 92, 222, 0.25);
+        }
+
+        .dark .form-input, .dark .form-select {
+            background-color: var(--card-dark);
+            color: var(--text-dark);
+            border-color: var(--border-dark);
+        }
+
+        .custom-card {
+            background-color: var(--card-light);
+            border: 1px solid var(--border-light);
+            transition: all 0.3s ease;
+        }
+
+        .dark .custom-card {
+            background-color: var(--card-dark);
+            border-color: var(--border-dark);
+        }
+
+        #register-button{
+            background-color: #22C55E;
+        }
+
+        /* Custom animations */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .page-enter {
+            animation: fadeIn 0.5s ease forwards;
+        }
+
+        .btn-primary {
+            background-color: var(--primary);
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary:hover {
+            background-color: var(--primary-dark);
+        }
+        
+        .skeleton {
+            position: relative;
+            overflow: hidden;
+            background-color: #E5E7EB;
+            border-radius: 0.375rem;
+        }
+        
+        .dark .skeleton {
+            background-color: #4B5563;
+        }
+        
+        .skeleton::after {
+            position: absolute;
+            top: 0;
+            right: 0;
+            bottom: 0;
+            left: 0;
+            transform: translateX(-100%);
+            background-image: linear-gradient(
+                90deg,
+                rgba(255, 255, 255, 0) 0,
+                rgba(255, 255, 255, 0.2) 20%,
+                rgba(255, 255, 255, 0.5) 60%,
+                rgba(255, 255, 255, 0)
+            );
+            animation: shimmer 2s infinite;
+            content: '';
+        }
+
+        
+        @keyframes shimmer {
+            100% {
+                transform: translateX(100%);
+            }
+        }
+
+        .loader {
+            border-top-color: var(--primary);
+            animation: spinner 0.6s linear infinite;
+        }
+        
+        @keyframes spinner {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+    </style>
+</head>
+<body class="min-h-screen bg-gray-50 text-gray-800">
+    <div id="app-container">
+        <!-- Navigation -->
+        <nav class="bg-white shadow-sm dark:bg-gray-800 transition-colors duration-300">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="flex justify-between h-16">
+                    <div class="flex items-center">
+                        <div class="flex-shrink-0 flex items-center">
+                            <i class="fas fa-hand-holding-heart text-2xl text-primary mr-2"></i>
+                            <span class="font-bold text-xl">ReliefLink</span>
+                        </div>
+                    </div>
+                    <div class="flex items-center">
+                        <button id="theme-toggle" class="p-2 rounded-full text-gray-500 dark:text-gray-300 focus:outline-none">
+                            <svg id="theme-toggle-dark-icon" class="hidden w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                                <path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"></path>
+                            </svg>
+                            <svg id="theme-toggle-light-icon" class="hidden w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                                <path d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z" fill-rule="evenodd" clip-rule="evenodd"></path>
+                            </svg>
+                        </button>
+                        <button id="logout-button" class="ml-4 px-4 py-2 rounded-md text-sm font-medium text-white bg-primary hover:bg-primary-dark focus:outline-none hidden">
+                            <i class="fas fa-sign-out-alt mr-1"></i> Logout
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </nav>
+
+        <!-- Main Content -->
+        <main class="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
+            <!-- Registration Page -->
+            <div id="registration-page" class="page-enter px-4 py-6 sm:px-0">
+                <div class="max-w-lg mx-auto">
+                    <div class="text-center mb-6">
+                        <h2 class="text-3xl font-extrabold text-gray-900 dark:text-white">Register as a Victim</h2>
+                        <p class="mt-2 text-sm text-gray-600 dark:text-gray-400">
+                            Create your account to receive disaster relief support
+                        </p>
+                    </div>
+
+                    <div class="mt-8 custom-card shadow-lg rounded-lg p-6 mb-6">
+                        <form id="registration-form" class="space-y-4">
+                            <div>
+                                <label for="name" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Full Name</label>
+                                <input type="text" id="name" name="name" required
+                                    class="form-input mt-1 block w-full px-3 py-3 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none text-base"
+                                    placeholder="Enter your full name">
+                                <p id="name-error" class="mt-1 text-sm text-red-600 hidden"></p>
+                            </div>
+
+                            <div>
+                                <label for="email" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Email Address</label>
+                                <input type="email" id="email" name="email" required
+                                    class="form-input mt-1 block w-full px-3 py-3 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none text-base"
+                                    placeholder="you@example.com">
+                                <p id="email-error" class="mt-1 text-sm text-red-600 hidden"></p>
+                            </div>
+
+                            <div>
+                                <label for="password" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Password</label>
+                                <div class="relative">
+                                    <input type="password" id="password" name="password" required
+                                        class="form-input mt-1 block w-full px-3 py-3 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none text-base"
+                                        placeholder="Create a secure password">
+                                    <button type="button" id="toggle-password" class="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-500 mt-1">
+                                        <i class="fas fa-eye"></i>
+                                    </button>
+                                </div>
+                                <p id="password-error" class="mt-1 text-sm text-red-600 hidden"></p>
+                            </div>
+
+                            <div>
+                                <label for="city" class="block text-sm font-medium text-gray-700 dark:text-gray-300">City</label>
+                                <input type="text" id="city" name="city" required
+                                    class="form-input mt-1 block w-full px-3 py-3 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none text-base"
+                                    placeholder="e.g., Delhi">
+                                <p id="city-error" class="mt-1 text-sm text-red-600 hidden"></p>
+                            </div>
+
+                            <div>
+                                <button type="submit" id="register-button"
+                                    class="w-full flex justify-center py-3 px-4 border border-transparent rounded-md shadow-sm text-base font-medium text-white bg-primary hover:bg-primary-dark focus:outline-none transition duration-150 ease-in-out">
+                                    <span id="register-text">Register</span>
+                                    <span id="register-loader" class="hidden">
+                                        <svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                                            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                                        </svg>
+                                        Processing...
+                                    </span>
+                                </button>
+                            </div>
+                        </form>
+                        <div id="response-message" class="mt-4 p-3 rounded-md hidden"></div>
+                    </div>
+                    
+                    <p class="text-center text-sm text-gray-600 dark:text-gray-400">
+                        Already have an account? <a href="#" class="font-medium text-primary hover:text-primary-dark">Sign in</a>
+                    </p>
+                </div>
+            </div>
+
+            <!-- Profile Page -->
+            <div id="profile-page" class="page-enter px-4 py-6 sm:px-0 hidden">
+                <div class="max-w-3xl mx-auto">
+                    <div class="text-center mb-6">
+                        <h2 class="text-3xl font-extrabold text-gray-900 dark:text-white">Your Relief Profile</h2>
+                        <p class="mt-2 text-sm text-gray-600 dark:text-gray-400">
+                            Manage your account and view your relief wallet
+                        </p>
+                    </div>
+
+                    <div class="grid grid-cols-1 gap-6 md:grid-cols-2">
+                        <!-- User Information Card -->
+                        <div class="custom-card shadow-lg rounded-lg overflow-hidden">
+                            <div class="px-6 py-5 border-b border-gray-200 dark:border-gray-700">
+                                <h3 class="text-lg font-medium text-gray-900 dark:text-white">
+                                    <i class="fas fa-user-circle mr-2"></i>Personal Information
+                                </h3>
+                            </div>
+                            <div class="p-6">
+                                <div id="profile-data-loading" class="space-y-4">
+                                    <div class="skeleton h-4 w-3/4"></div>
+                                    <div class="skeleton h-4 w-1/2"></div>
+                                    <div class="skeleton h-4 w-5/6"></div>
+                                    <div class="skeleton h-4 w-2/3"></div>
+                                </div>
+                                <div id="profile-data" class="hidden">
+                                    <div class="mb-4">
+                                        <div class="text-sm text-gray-500 dark:text-gray-400">Full Name</div>
+                                        <div id="profile-name" class="mt-1 text-base font-medium text-gray-900 dark:text-white"></div>
+                                    </div>
+                                    <div class="mb-4">
+                                        <div class="text-sm text-gray-500 dark:text-gray-400">Email Address</div>
+                                        <div id="profile-email" class="mt-1 text-base font-medium text-gray-900 dark:text-white"></div>
+                                    </div>
+                                    <div class="mb-4">
+                                        <div class="text-sm text-gray-500 dark:text-gray-400">City</div>
+                                        <div id="profile-city" class="mt-1 text-base font-medium text-gray-900 dark:text-white"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Wallet Information Card -->
+                        <div class="custom-card shadow-lg rounded-lg overflow-hidden">
+                            <div class="px-6 py-5 border-b border-gray-200 dark:border-gray-700">
+                                <h3 class="text-lg font-medium text-gray-900 dark:text-white">
+                                    <i class="fas fa-wallet mr-2"></i>Relief Wallet
+                                </h3>
+                            </div>
+                            <div class="p-6">
+                                <div id="wallet-data-loading" class="space-y-4">
+                                    <div class="skeleton h-4 w-3/4"></div>
+                                    <div class="skeleton h-8 w-1/2 mt-4"></div>
+                                    <div class="skeleton h-4 w-5/6 mt-6"></div>
+                                    <div class="skeleton h-4 w-2/3"></div>
+                                </div>
+                                <div id="wallet-data" class="hidden">
+                                    <div class="mb-6">
+                                        <div class="text-sm text-gray-500 dark:text-gray-400">Current Balance</div>
+                                        <div class="mt-2 flex items-end">
+                                            <span id="wallet-balance" class="text-3xl font-bold text-gray-900 dark:text-white">0.00</span>
+                                            <span class="ml-2 text-sm text-gray-500 dark:text-gray-400">tokens</span>
+                                        </div>
+                                    </div>
+                                    <div class="mb-4">
+                                        <div class="text-sm text-gray-500 dark:text-gray-400">Wallet Address</div>
+                                        <div class="mt-1 flex items-center">
+                                            <div id="wallet-address" class="text-sm font-mono text-gray-900 dark:text-white truncate"></div>
+                                            <button id="copy-wallet" class="ml-2 text-primary hover:text-primary-dark">
+                                                <i class="fas fa-copy"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <div class="mt-6">
+                                        <button class="w-full py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-primary hover:bg-primary-dark focus:outline-none transition duration-150 ease-in-out">
+                                            View Transaction History
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Recent Activity -->
+                    <div class="mt-6 custom-card shadow-lg rounded-lg overflow-hidden">
+                        <div class="px-6 py-5 border-b border-gray-200 dark:border-gray-700">
+                            <h3 class="text-lg font-medium text-gray-900 dark:text-white">
+                                <i class="fas fa-history mr-2"></i>Recent Activity
+                            </h3>
+                        </div>
+                        <div class="p-6">
+                            <div id="activity-loading" class="space-y-4">
+                                <div class="skeleton h-16 w-full"></div>
+                                <div class="skeleton h-16 w-full"></div>
+                                <div class="skeleton h-16 w-full"></div>
+                            </div>
+                            <div id="activity-data" class="hidden">
+                                <p class="text-center text-gray-500 dark:text-gray-400 py-8">
+                                    <i class="fas fa-info-circle mr-2"></i>No recent activity to display
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <!-- Footer -->
+        <footer class="bg-white dark:bg-gray-800 transition-colors duration-300">
+            <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
+                <p class="text-center text-sm text-gray-500 dark:text-gray-400">
+                    © 2023 ReliefLink. All rights reserved.
+                </p>
+            </div>
+        </footer>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Dark mode toggle
+            const themeToggleDarkIcon = document.getElementById('theme-toggle-dark-icon');
+            const themeToggleLightIcon = document.getElementById('theme-toggle-light-icon');
+            const themeToggleBtn = document.getElementById('theme-toggle');
+
+            // Check if dark mode is enabled
+            if (localStorage.getItem('color-theme') === 'dark' || 
+                (!('color-theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+                document.documentElement.classList.add('dark');
+                themeToggleLightIcon.classList.remove('hidden');
+            } else {
+                themeToggleDarkIcon.classList.remove('hidden');
+            }
+
+            // Toggle dark mode
+            themeToggleBtn.addEventListener('click', function() {
+                // Toggle icons
+                themeToggleDarkIcon.classList.toggle('hidden');
+                themeToggleLightIcon.classList.toggle('hidden');
+
+                // If dark mode is already set
+                if (localStorage.getItem('color-theme') === 'dark' || 
+                    (!('color-theme' in localStorage) && document.documentElement.classList.contains('dark'))) {
+                    document.documentElement.classList.remove('dark');
+                    localStorage.setItem('color-theme', 'light');
+                } else {
+                    document.documentElement.classList.add('dark');
+                    localStorage.setItem('color-theme', 'dark');
+                }
+            });
+
+            // Password toggle visibility
+            const togglePassword = document.getElementById('toggle-password');
+            const passwordInput = document.getElementById('password');
+
+            togglePassword.addEventListener('click', function() {
+                const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+                passwordInput.setAttribute('type', type);
+                togglePassword.innerHTML = type === 'password' ? '<i class="fas fa-eye"></i>' : '<i class="fas fa-eye-slash"></i>';
+            });
+
+            // Form validation
+            const registrationForm = document.getElementById('registration-form');
+            const nameInput = document.getElementById('name');
+            const emailInput = document.getElementById('email');
+            const cityInput = document.getElementById('city');
+            const nameError = document.getElementById('name-error');
+            const emailError = document.getElementById('email-error');
+            const passwordError = document.getElementById('password-error');
+            const cityError = document.getElementById('city-error');
+            const responseMessage = document.getElementById('response-message');
+
+            // Show loading state
+            function showLoading(isLoading) {
+                const registerText = document.getElementById('register-text');
+                const registerLoader = document.getElementById('register-loader');
+                const registerButton = document.getElementById('register-button');
+
+                if (isLoading) {
+                    registerText.classList.add('hidden');
+                    registerLoader.classList.remove('hidden');
+                    registerButton.disabled = true;
+                } else {
+                    registerText.classList.remove('hidden');
+                    registerLoader.classList.add('hidden');
+                    registerButton.disabled = false;
+                }
+            }
+
+            // Validate form
+            function validateForm() {
+                let isValid = true;
+
+                // Validate name
+                if (!nameInput.value.trim()) {
+                    nameError.textContent = 'Name is required';
+                    nameError.classList.remove('hidden');
+                    isValid = false;
+                } else if (nameInput.value.trim().length < 3) {
+                    nameError.textContent = 'Name must be at least 3 characters';
+                    nameError.classList.remove('hidden');
+                    isValid = false;
+                } else {
+                    nameError.classList.add('hidden');
+                }
+
+                // Validate email
+                const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                if (!emailInput.value.trim()) {
+                    emailError.textContent = 'Email is required';
+                    emailError.classList.remove('hidden');
+                    isValid = false;
+                } else if (!emailRegex.test(emailInput.value.trim())) {
+                    emailError.textContent = 'Please enter a valid email address';
+                    emailError.classList.remove('hidden');
+                    isValid = false;
+                } else {
+                    emailError.classList.add('hidden');
+                }
+
+                // Validate password
+                if (!passwordInput.value) {
+                    passwordError.textContent = 'Password is required';
+                    passwordError.classList.remove('hidden');
+                    isValid = false;
+                } else if (passwordInput.value.length < 6) {
+                    passwordError.textContent = 'Password must be at least 6 characters';
+                    passwordError.classList.remove('hidden');
+                    isValid = false;
+                } else {
+                    passwordError.classList.add('hidden');
+                }
+
+                // Validate city
+                if (!cityInput.value.trim()) {
+                    cityError.textContent = 'City is required';
+                    cityError.classList.remove('hidden');
+                    isValid = false;
+                } else {
+                    cityError.classList.add('hidden');
+                }
+
+                return isValid;
+            }
+
+            // Show message
+            function showMessage(message, isError = false) {
+                responseMessage.textContent = message;
+                responseMessage.classList.remove('hidden', 'bg-red-100', 'text-red-700', 'bg-green-100', 'text-green-700');
+                
+                if (isError) {
+                    responseMessage.classList.add('bg-red-100', 'text-red-700');
+                } else {
+                    responseMessage.classList.add('bg-green-100', 'text-green-700');
+                }
+            }
+
+            // Handle form submission
+            registrationForm.addEventListener('submit', async function(e) {
+                e.preventDefault();
+
+                // Validate form
+                if (!validateForm()) {
+                    return;
+                }
+
+                // Show loading state
+                showLoading(true);
+
+                try {
+                    // Clear previous response
+                    responseMessage.classList.add('hidden');
+
+                    // Submit data to API
+                    const response = await fetch("http://127.0.0.1:8000/auth/register", {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify({
+                            name: nameInput.value.trim(),
+                            email: emailInput.value.trim(),
+                            password: passwordInput.value,
+                            city: cityInput.value.trim()
+                        }),
+                    });
+
+                    // Process response
+                    const data = await response.json();
+
+                    if (response.ok) {
+                        // On successful registration, store user data and token for session management
+                        const userData = {
+                            name: nameInput.value.trim(),
+                            email: emailInput.value.trim(),
+                            city: cityInput.value.trim(),
+                            wallet_public_key: data.wallet_public_key,
+                            token: data.token || 'dummy-token-for-demo'
+                        };
+
+                        // Store in localStorage for session management
+                        localStorage.setItem('user', JSON.stringify(userData));
+
+                        // Show success message
+                        showMessage(`✅ ${data.msg || 'Registration successful!'}`);
+
+                        // Delay before redirecting to profile page
+                        setTimeout(() => {
+                            // Navigate to profile page
+                            navigateToProfile(userData);
+                        }, 1000);
+                    } else {
+                        // Show error message
+                        showMessage(`❌ Error: ${data.msg || 'Registration failed. Please try again.'}`, true);
+                    }
+                } catch (error) {
+                    console.error('Error:', error);
+                    showMessage(`❌ Error: ${error.message || 'Something went wrong. Please try again.'}`, true);
+                } finally {
+                    // Hide loading state
+                    showLoading(false);
+                }
+            });
+
+            // Navigation and page management
+            const registrationPage = document.getElementById('registration-page');
+            const profilePage = document.getElementById('profile-page');
+            const logoutButton = document.getElementById('logout-button');
+
+            // Check if user is logged in on page load
+            function checkAuth() {
+                const userData = localStorage.getItem('user');
+                if (userData) {
+                    const user = JSON.parse(userData);
+                    navigateToProfile(user);
+                }
+            }
+
+            // Navigate to profile page
+            function navigateToProfile(userData) {
+                // Show profile page
+                registrationPage.classList.add('hidden');
+                profilePage.classList.remove('hidden');
+                logoutButton.classList.remove('hidden');
+
+                // Display user data
+                document.getElementById('profile-name').textContent = userData.name;
+                document.getElementById('profile-email').textContent = userData.email;
+                document.getElementById('profile-city').textContent = userData.city;
+                document.getElementById('wallet-address').textContent = userData.wallet_public_key;
+
+                // Hide skeletons and show data
+                document.getElementById('profile-data-loading').classList.add('hidden');
+                document.getElementById('profile-data').classList.remove('hidden');
+                document.getElementById('wallet-data-loading').classList.add('hidden');
+                document.getElementById('wallet-data').classList.remove('hidden');
+                document.getElementById('activity-loading').classList.add('hidden');
+                document.getElementById('activity-data').classList.remove('hidden');
+
+                // Add wallet balance (random for demo)
+                const randomBalance = (Math.random() * 1000).toFixed(2);
+                document.getElementById('wallet-balance').textContent = 100000.0;
+            }
+
+            // Copy wallet address to clipboard
+            document.getElementById('copy-wallet').addEventListener('click', function() {
+                const walletAddress = document.getElementById('wallet-address').textContent;
+                navigator.clipboard.writeText(walletAddress).then(() => {
+                    this.innerHTML = '<i class="fas fa-check"></i>';
+                    setTimeout(() => {
+                        this.innerHTML = '<i class="fas fa-copy"></i>';
+                    }, 2000);
+                });
+            });
+
+            // Handle logout
+            logoutButton.addEventListener('click', function() {
+                localStorage.removeItem('user');
+                profilePage.classList.add('hidden');
+                registrationPage.classList.remove('hidden');
+                logoutButton.classList.add('hidden');
+                
+                // Clear form data
+                registrationForm.reset();
+            });
+
+            // Check authentication on page load
+            checkAuth();
+        });
+    </script>
+</body>
+</html>

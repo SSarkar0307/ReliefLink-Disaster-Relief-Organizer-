@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Live Disaster Feed</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #5D5CDE;
+            --primary-transparent: rgba(93, 92, 222, 0.08);
+            --text-primary: #2d3748;
+            --text-secondary: #4a5568;
+            --error-color: #F56565;
+            --background-main: #F7FAFC;
+            --background-secondary: #EDF2F7;
+            --background-tertiary: #E2E8F0;
+            --card-bg: rgba(255, 255, 255, 0.9);
+            --border-color: rgba(226, 232, 240, 0.8);
+            --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+            --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+            --transition-default: all 0.3s ease;
+        }
+
+        .dark {
+            --primary-color: #6366F1;
+            --primary-transparent: rgba(99, 102, 241, 0.15);
+            --text-primary: #F7FAFC;
+            --text-secondary: #E2E8F0;
+            --error-color: #F87171;
+            --background-main: #1a202c;
+            --background-secondary: #2d3748;
+            --background-tertiary: #4a5568;
+            --card-bg: rgba(26, 32, 44, 0.8);
+            --border-color: rgba(74, 85, 104, 0.6);
+        }
+
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: rgba(203, 213, 224, 0.8);
+            border-radius: 4px;
+        }
+
+        .dark ::-webkit-scrollbar-thumb {
+            background: rgba(74, 85, 104, 0.8);
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: rgba(160, 174, 192, 0.8);
+        }
+
+        .dark ::-webkit-scrollbar-thumb:hover {
+            background: rgba(113, 128, 150, 0.8);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            color: var(--text-primary);
+            min-height: 100vh;
+            background-color: var(--background-main);
+            transition: var(--transition-default);
+        }
+
+        .disaster-feed-container {
+            background: var(--card-bg);
+            padding: 2rem;
+            margin: 1rem;
+            border-radius: 1.5rem;
+            box-shadow: var(--shadow-xl);
+            backdrop-filter: blur(16px);
+            border: 1px solid var(--border-color);
+            min-height: 100vh;
+            overflow-y: auto;
+        }
+
+        .disaster-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .disaster-header h1 {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+
+        .aid-button {
+            padding: 0.5rem 1rem;
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            transition: var(--transition-default);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .aid-button:hover {
+            background-color: #4a49b5; /* Slightly darker shade for hover */
+            transform: translateY(-2px);
+            box-shadow: var(--shadow);
+        }
+
+        .aid-button:active {
+            transform: translateY(0);
+        }
+
+        .disaster-feed {
+            max-height: calc(100vh - 200px);
+            overflow-y: auto;
+            padding-right: 1rem;
+            transition: var(--transition-default);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .disaster-item {
+            background: var(--background-secondary);
+            border-radius: 1rem;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            opacity: 0;
+            transform: translateY(10px);
+            animation: fadeInUp 0.4s forwards;
+            transition: var(--transition-default);
+        }
+
+        .disaster-item:hover {
+            background: var(--background-tertiary);
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .disaster-icon {
+            font-size: 1.5rem;
+            padding: 0.75rem;
+            border-radius: 50%;
+            background: var(--primary-transparent);
+            color: var(--primary-color);
+        }
+
+        .disaster-details {
+            flex: 1;
+        }
+
+        .disaster-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .disaster-meta {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            margin-top: 0.25rem;
+        }
+
+        .disaster-level {
+            font-size: 0.85rem;
+            font-weight: 500;
+            padding: 0.25rem 0.5rem;
+            border-radius: 0.5rem;
+        }
+
+        .level-critical {
+            background: rgba(239, 68, 68, 0.2);
+            color: var(--error-color);
+        }
+
+        .level-warning {
+            background: rgba(245, 158, 11, 0.2);
+            color: #D97706;
+        }
+
+        .level-info {
+            background: rgba(59, 130, 246, 0.2);
+            color: #3B82F6;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .disaster-feed-container {
+                margin: 0;
+                border-radius: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="disaster-feed-container" id="disaster-feed-container">
+        <div class="disaster-header">
+            <h1>Live Disaster Feed</h1>
+            <a href="/aid-transfers" class="aid-button" id="aid-transfer-button">
+                <i class="fas fa-hand-holding-usd"></i> Live Aid Transfers
+            </a>
+        </div>
+        <div class="disaster-feed" id="disaster-feed">
+            <!-- Disaster events will appear here -->
+        </div>
+    </div>
+
+    <script src="/static/disaster-feed.js"></script>
+</body>
+</html>

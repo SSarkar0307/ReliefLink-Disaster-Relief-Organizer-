@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About Us - ReliefLink</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #238636;
+            --primary-dark: #2EA043;
+            --secondary: #8B949E;
+            --accent: #F78166;
+            --success: #238636;
+            --error: #F85149;
+            --background-light: #FFFFFF;
+            --text-light: #24292F;
+            --text-light-secondary: #57606A;
+            --card-light: #F6F8FA;
+            --border-light: #D0D7DE;
+            --background-dark: #0D1117;
+            --text-dark: #E6EDF3;
+            --text-dark-secondary: #A3BFFA;
+            --card-dark: #161B22;
+            --border-dark: #30363D;
+        }
+
+        .dark {
+            --primary: #238636;
+            --primary-dark: #2EA043;
+            --secondary: #8B949E;
+            --accent: #F78166;
+            --success: #238636;
+            --error: #F85149;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            transition: background-color 0.3s ease, color 0.3s ease;
+            background-color: var(--background-dark);
+            color: var(--text-dark);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        #app-container {
+            flex: 1 0 auto;
+        }
+
+        .custom-card {
+            background-color: var(--card-dark);
+            border: 1px solid var(--border-dark);
+            transition: all 0.3s ease;
+            border-radius: 6px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .navbar {
+            background-color: var(--background-dark);
+            padding: 1rem;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: background-color 0.3s ease, color 0.3s ease;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .navbar .logo {
+            display: flex;
+            align-items: center;
+        }
+
+        .logo-icon {
+            color: var(--text-dark);
+            font-size: 1.5rem;
+            margin-right: 0.5rem;
+            transition: color 0.3s ease;
+        }
+
+        .logo-text {
+            color: var(--text-dark);
+            font-weight: 700;
+            font-size: 1.5rem;
+            transition: color 0.3s ease;
+        }
+
+        .dark .text-gray-500 {
+            color: var(--text-dark-secondary) !important;
+        }
+
+        .dark .text-gray-900 {
+            color: var(--text-dark) !important;
+        }
+
+        main {
+            margin-bottom: 3rem;
+        }
+
+        footer {
+            flex-shrink: 0;
+            background-color: var(--background-dark);
+            padding: 2rem 0;
+            text-align: center;
+            color: var(--text-dark-secondary);
+            font-size: 0.875rem;
+            font-weight: 500;
+            transition: background-color 0.3s ease, color 0.3s ease;
+            margin-top: auto;
+        }
+
+        .team-member {
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .team-member:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+        }
+    </style>
+</head>
+<body class="min-h-screen bg-[var(--background-dark)] text-[var(--text-dark)]">
+    <div id="app-container">
+        <!-- Navigation -->
+        <nav class="navbar shadow-sm">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="flex justify-center h-16">
+                    <div class="flex-shrink-0 flex items-center logo">
+                        <i class="fas fa-hand-holding-heart logo-icon mr-2"></i>
+                        <span class="logo-text">ReliefLink</span>
+                    </div>
+                </div>
+            </div>
+        </nav>
+
+        <!-- Main Content -->
+        <main class="max-w-7xl mx-auto py-8 sm:px-6 lg:px-8">
+            <div class="max-w-4xl mx-auto">
+                <div class="text-center mb-12">
+                    <h2 class="text-4xl font-extrabold text-[var(--text-dark)]">About Us</h2>
+                    <p class="mt-4 text-lg text-[var(--text-dark-secondary)]">
+                        At ReliefLink, we are committed to providing disaster relief support to those in need. Our mission is to connect communities with resources, ensuring aid reaches the most vulnerable through innovative technology and compassionate service.
+                    </p>
+                </div>
+
+                <!-- Team Section -->
+                <div class="custom-card shadow-lg rounded-lg overflow-hidden">
+                    <div class="px-6 py-5 border-b border-[var(--border-dark)]">
+                        <h3 class="text-xl font-semibold text-[var(--text-dark)]">
+                            <i class="fas fa-users mr-2"></i>Meet Our Team
+                        </h3>
+                    </div>
+                    <div class="p-6">
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                            <!-- Team Member 1 -->
+                            <div class="team-member custom-card p-4 text-center">
+                                <div class="w-24 h-24 mx-auto rounded-full bg-[var(--border-dark)] flex items-center justify-center">
+                                    <i class="fas fa-user text-4xl text-[var(--text-dark-secondary)]"></i>
+                                </div>
+                                <h4 class="mt-4 text-lg font-medium text-[var(--text-dark)]">Faishal Imtiaz</h4><img src=""
+                                <p class="mt-2 text-sm text-[var(--text-dark-secondary)]">Team Lead</p>
+                            </div>
+                            <!-- Team Member 2 -->
+                            <div class="team-member custom-card p-4 text-center">
+                                <div class="w-24 h-24 mx-auto rounded-full bg-[var(--border-dark)] flex items-center justify-center">
+                                    <i class="fas fa-user text-4xl text-[var(--text-dark-secondary)]"></i>
+                                </div>
+                                <h4 class="mt-4 text-lg font-medium text-[var(--text-dark)]">Sohan Sarkar</h4>
+                                <p class="mt-2 text-sm text-[var(--text-dark-secondary)]">Lead Devloper</p>
+                            </div>
+                            <!-- Team Member 3 -->
+                            <div class="team-member custom-card p-4 text-center">
+                                <div class="w-24 h-24 mx-auto rounded-full bg-[var(--border-dark)] flex items-center justify-center">
+                                    <i class="fas fa-user text-4xl text-[var(--text-dark-secondary)]"></i>
+                                </div>
+                                <h4 class="mt-4 text-lg font-medium text-[var(--text-dark)]">Md Nehal</h4>
+                                <p class="mt-2 text-sm text-[var(--text-dark-secondary)]">Blockchain Specialist</p>
+                            </div>
+                            <!-- Team Member 4 -->
+                            <div class="team-member custom-card p-4 text-center">
+                                <div class="w-24 h-24 mx-auto rounded-full bg-[var(--border-dark)] flex items-center justify-center">
+                                    <i class="fas fa-user text-4xl text-[var(--text-dark-secondary)]"></i>
+                                </div>
+                                <h4 class="mt-4 text-lg font-medium text-[var(--text-dark)]">Waqar Ahmed</h4>
+                                <p class="mt-2 text-sm text-[var(--text-dark-secondary)]">UI/UX Designer</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
+            <p class="text-center text-sm text-[var(--text-dark-secondary)]">
+                © 2025 ReliefLink. All rights reserved.
+            </p>
+        </div>
+    </footer>
+</body>
+</html>
